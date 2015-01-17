@@ -1,7 +1,8 @@
 Package.describe({
   name: 'differential:cluster',
   summary: 'Start headless meteor processes.',
-  version: '0.0.1'
+  version: '1.0.0',
+  git: 'https://github.com/Differential/meteor-cluster'
 });
 
 Package.onUse(function(api) {
