@@ -2,7 +2,8 @@ var cluster = Npm.require('cluster');
 var os = Npm.require('os');
 var settings = _.defaults(Meteor.settings.cluster || {}, {
   disable: false,
-  count: 1
+  count: 1,
+  exec: ''
 });
 
 
@@ -29,8 +30,15 @@ Cluster = {
   startup: function() {
     if (settings.disable) return;
     if (this.isMaster) {
-      this.start();
-      this.runCallbacks(this.masterCallbacks);
+      if (settings.exec) {
+        cluster.setupMaster({
+          exec: 'assets/app/' + settings.exec
+        });
+        this.start();
+      } else {
+        this.start();
+        this.runCallbacks(this.masterCallbacks);
+      }
     } else {
       this.runCallbacks(this.workerCallbacks);
     }
@@ -40,7 +48,7 @@ Cluster = {
     self = this;
     if (_.size(cluster.workers) === 0) {
       for (var i = 0; i < settings.count; i++) {
-        var worker = cluster.fork( {PORT: 0} );
+        var worker = cluster.fork( {PORT: 0, VELOCITY: 0} );
         worker.on('exit', function() {
           self.log('Worker process killed.');
         });
