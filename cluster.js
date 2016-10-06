@@ -28,6 +28,10 @@ Cluster = {
   },
 
   startup: function() {
+    // skip for meteorhacks:cluster workers
+    if (process.env['CLUSTER_WORKER_ID']) {
+      return;
+    }
     if (settings.disable) return;
     if (this.isMaster) {
       if (settings.exec) {
